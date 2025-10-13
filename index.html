@@ -741,6 +741,49 @@
                 justify-content: center;
             }
         }
+
+        /* Music Player */
+        .music-player {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            background-color: rgba(61, 74, 94, 0.9);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 999;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .music-player:hover {
+            background-color: rgba(52, 152, 219, 0.9);
+            border-color: #3498db;
+            transform: scale(1.1);
+        }
+
+        .music-player i {
+            color: #ffffff;
+            font-size: 24px;
+        }
+
+        @media (max-width: 768px) {
+            .music-player {
+                width: 50px;
+                height: 50px;
+                bottom: 20px;
+                right: 20px;
+            }
+            
+            .music-player i {
+                font-size: 20px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -880,6 +923,15 @@
         <div class="footer-disclaimer">
             <p>DISCLAIMER: Questo sito è stato creato esclusivamente a scopo videoludico e di intrattenimento. Tutti i contenuti, le informazioni, le immagini e i dati presentati sono puramente fittizi e non rappresentano informazioni reali o ufficiali dell'Aeronautica Militare Italiana o della Pattuglia Acrobatica Nazionale "Frecce Tricolori".</p>
         </div>
+
+        <!-- Music Player -->
+        <div class="music-player" id="musicPlayer" onclick="toggleMusic()">
+            <i class="fas fa-music" id="musicIcon"></i>
+        </div>
+
+        <audio id="backgroundMusic" loop>
+            <source src="assets/music/inno.mp3" type="audio/mpeg">
+        </audio>
     </footer>
 
     <script>
@@ -1233,6 +1285,53 @@
             } else if (e.key === 'ArrowRight') {
                 changeVideo(1);
             }
+        });
+
+        // Music Player
+        const backgroundMusic = document.getElementById('backgroundMusic');
+        const musicIcon = document.getElementById('musicIcon');
+        let isPlaying = false;
+
+        function toggleMusic() {
+            if (isPlaying) {
+                backgroundMusic.pause();
+                musicIcon.className = 'fas fa-music';
+                isPlaying = false;
+            } else {
+                backgroundMusic.play().catch(err => {
+                    console.log('Riproduzione non consentita:', err);
+                });
+                musicIcon.className = 'fas fa-pause';
+                isPlaying = true;
+            }
+        }
+
+        // Imposta volume
+        backgroundMusic.volume = 0.3;
+
+        // Tenta autoplay al caricamento
+        window.addEventListener('load', () => {
+            backgroundMusic.play()
+                .then(() => {
+                    isPlaying = true;
+                    musicIcon.className = 'fas fa-pause';
+                })
+                .catch(() => {
+                    // Se l'autoplay fallisce, la musica partirà al primo click ovunque nella pagina
+                    document.body.addEventListener('click', function startMusic() {
+                        if (!isPlaying) {
+                            backgroundMusic.play()
+                                .then(() => {
+                                    isPlaying = true;
+                                    musicIcon.className = 'fas fa-pause';
+                                })
+                                .catch(err => console.log('Errore riproduzione:', err));
+                            
+                            // Rimuovi l'event listener dopo il primo click
+                            document.body.removeEventListener('click', startMusic);
+                        }
+                    }, { once: true });
+                });
         });
     </script>
 </body>
