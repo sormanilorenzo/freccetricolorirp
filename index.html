@@ -12,8 +12,7 @@
     <link rel="apple-touch-icon" sizes="180x180" href="assets/icons/apple-touch-icon.png">
     <link rel="manifest" href="assets/icons/site.webmanifest">
     <meta name="theme-color" content="#32354d">
-
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
     <style>
         * {
             margin: 0;
@@ -176,6 +175,94 @@
 
         .event-card.passed .event-date {
             background-color: rgba(149, 165, 166, 0.95);
+        }
+
+        .event-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.85);
+            z-index: 1000;
+            overflow-y: auto;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .event-modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+        }
+
+        .event-modal-content {
+            background-color: #3d4a5e;
+            border-radius: 16px;
+            max-width: 900px;
+            width: 100%;
+            position: relative;
+            box-shadow: 0 10px 50px rgba(0, 0, 0, 0.5);
+            animation: slideUp 0.3s ease;
+        }
+
+        .event-modal-header {
+            padding: 30px 40px 20px;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .event-modal-date {
+            display: inline-block;
+            background-color: rgba(52, 152, 219, 0.95);
+            padding: 8px 20px;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 18px;
+            color: #ffffff;
+            margin-bottom: 15px;
+        }
+
+        .event-modal-title {
+            font-size: 32px;
+            font-weight: bold;
+            color: #ffffff;
+            margin: 0;
+        }
+
+        .event-modal-body {
+            padding: 30px 40px;
+        }
+
+.event-modal-image {
+    width: 100%;
+    max-height: 600px;
+    height: auto;
+    object-fit: contain;
+    border-radius: 12px;
+    margin-bottom: 25px;
+}
+
+        .event-modal-description {
+            color: #e8e8e8;
+            font-size: 16px;
+            line-height: 1.9;
+            text-align: justify;
+        }
+
+        @media (max-width: 768px) {
+            .event-modal-header,
+            .event-modal-body {
+                padding: 20px;
+            }
+            
+            .event-modal-title {
+                font-size: 24px;
+            }
+            
+            .event-modal-image {
+                max-height: 250px;
+            }
         }
 
         /* Team Section */
@@ -875,6 +962,20 @@
         </div>
     </div>
 
+    <div class="event-modal" id="eventModal">
+        <div class="event-modal-content">
+            <button class="close-button" onclick="closeEventModal()">×</button>
+            <div class="event-modal-header">
+                <div class="event-modal-date" id="eventModalDate"></div>
+                <h2 class="event-modal-title" id="eventModalTitle"></h2>
+            </div>
+            <div class="event-modal-body">
+                <img id="eventModalImage" src="" alt="Evento" class="event-modal-image">
+                <p class="event-modal-description" id="eventModalDescription"></p>
+            </div>
+        </div>
+    </div>
+
     <!-- Programma Acrobatico Section -->
     <section class="acrobatic-section" id="programma">
         <div class="acrobatic-content">
@@ -938,12 +1039,54 @@
     <script>
         // Array degli eventi con date (formato: YYYY-MM-DD) - MAX 6 EVENTI
         const events = [
-            { date: '2025-10-25', image: 'assets/events/2510.png', location: 'milano' },
-            { date: '2025-10-26', image: 'assets/events/evento-image.jpg', location: 'elba' },
-            { date: '2025-10-27', image: 'assets/events/evento-image.jpg', location: 'milano' },
-            { date: '2025-10-28', image: 'assets/events/evento-image.jpg', location: 'elba' },
-            { date: '2025-10-29', image: 'assets/events/evento-image.jpg', location: 'milano' },
-            { date: '2025-11-07', image: 'assets/events/evento-image.jpg', location: 'elba' }
+            { 
+                date: '2025-10-25', 
+                image: 'assets/events/map.png',
+                menuImage: 'assets/events/2510.png',
+                location: 'milano',
+                title: 'Addestramento di Volo',
+                description: 'Sessione di addestramento operativo con partenza dalla base di Milano Malpensa. La formazione eseguirà un circuito completo dell\'aeroporto seguito da un sorvolo della città, permettendo ai piloti di affinare la precisione delle manovre in ambiente urbano e di testare le procedure di volo in formazione stretta.'
+            },
+            { 
+                date: '2025-10-26', 
+                image: 'assets/events/map.png',
+                menuImage: 'assets/events/evento-image.jpg',
+                location: 'elba',
+                title: 'Esercitazione Tattica',
+                description: 'Esercitazione tattica avanzata con base operativa temporanea presso l\'aeroporto dell\'Isola d\'Elba. I piloti si concentreranno sulle manovre a bassa quota sul mare, simulando scenari operativi complessi e perfezionando le tecniche di navigazione visiva su riferimenti costieri.'
+            },
+            { 
+                date: '2025-10-27', 
+                image: 'assets/events/map.png',
+                menuImage: 'assets/events/evento-image.jpg',
+                location: 'milano',
+                title: 'Training Formation',
+                description: 'Sessione di addestramento intensivo focalizzata sulla sincronizzazione della formazione completa. Decollo da Milano Malpensa con esecuzione di figure acrobatiche ad alta quota, incluse le manovre preparatorie per le esibizioni pubbliche della stagione.'
+            },
+            { 
+                date: '2025-10-28', 
+                image: 'assets/events/map.png',
+                menuImage: 'assets/events/evento-image.jpg',
+                location: 'elba',
+                title: 'Volo di Ricognizione',
+                description: 'Missione di ricognizione e addestramento sul territorio dell\'Isola d\'Elba. La pattuglia effettuerà voli di familiarizzazione con l\'area operativa, testando le procedure di comunicazione e coordinamento in preparazione alle attività dimostrative previste.'
+            },
+            { 
+                date: '2025-10-29', 
+                image: 'assets/events/map.png',
+                menuImage: 'assets/events/evento-image.jpg',
+                location: 'milano',
+                title: 'Simulazione Display',
+                description: 'Prova generale del programma acrobatico completo nei cieli di Milano. La formazione eseguirà l\'intera sequenza di figure previste per le esibizioni ufficiali, con particolare attenzione alla precisione temporale e alla gestione degli spazi aerei urbani.'
+            },
+            { 
+                date: '2025-11-07', 
+                image: 'assets/events/map.png',
+                menuImage: 'assets/events/evento-image.jpg',
+                location: 'elba',
+                title: 'Addestramento Avanzato',
+                description: 'Sessione conclusiva di addestramento avanzato con focus sulle manovre complesse in formazione. Dall\'aeroporto dell\'Elba, i piloti perfezioneranno le tecniche di volo acrobatico, eseguendo passaggi sincronizzati e testando le nuove coreografie aeree sviluppate durante la stagione.'
+            }
         ];
 
         function formatDate(dateString) {
@@ -994,9 +1137,11 @@
                 }
 
                 card.innerHTML = `
-                    <img src="${event.image}" alt="${event.location}">
+                    <img src="${event.menuImage || event.image}" alt="${event.location}">
                     <div class="event-date">${formatDate(event.date)}</div>
                 `;
+
+                card.addEventListener('click', () => openEventModal(index));
 
                 eventsGrid.appendChild(card);
             });
@@ -1150,6 +1295,32 @@
             document.body.style.overflow = 'hidden';
         }
 
+        function openEventModal(index) {
+            const event = events[index];
+            const modal = document.getElementById('eventModal');
+            
+            document.getElementById('eventModalImage').src = event.image;
+            document.getElementById('eventModalDate').textContent = formatDate(event.date);
+            document.getElementById('eventModalTitle').textContent = event.title;
+            document.getElementById('eventModalDescription').textContent = event.description;
+            
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeEventModal() {
+            const modal = document.getElementById('eventModal');
+            modal.classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+
+        // Chiudi modal cliccando fuori
+        document.getElementById('eventModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeEventModal();
+            }
+        });
+
         function closeModal() {
             const modal = document.getElementById('historyModal');
             modal.classList.remove('active');
@@ -1167,6 +1338,7 @@
         document.addEventListener('keydown', function(e) {
             if (e.key === 'Escape') {
                 closeModal();
+                closeEventModal();
             }
         });
 
@@ -1188,8 +1360,8 @@
                 vimeoId: '734256987'
             },
             {
-                title: 'Incrocio cuore Tonneau Schneider positiva pull-up negativo',
-                vimeoId: '734256962'
+                title: 'Apertura della bomba e incrocio del solista',
+                vimeoId: '734256805'
             },
             {
                 title: 'Incrocio cuore Tonneau Schneider positiva pull-up negativo',
