@@ -1,0 +1,1801 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pattuglia Acrobatica Nazionale "Frecce Tricolori" - Aeronautica Militare IRP</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="assets/icons/favicon-96x96.png" sizes="96x96">
+    <link rel="icon" type="image/svg+xml" href="assets/icons/favicon.svg">
+    <link rel="shortcut icon" href="assets/icons/favicon.ico">
+    <link rel="apple-touch-icon" sizes="180x180" href="assets/icons/apple-touch-icon.png">
+    <link rel="manifest" href="assets/icons/site.webmanifest">
+    <meta name="theme-color" content="#32354d">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #32354d;
+        }
+
+        /* Nasconde il cursore originale */
+        body, * {
+            cursor: none !important;
+        }
+
+        /* Header */
+        header {
+            background-color: #3d4a5e;
+            padding: 10px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 3px solid #32354d;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+        }
+
+        .logo {
+            height: 70px;
+        }
+
+        .category-bar {
+            display: flex;
+            gap: 35px;
+            align-items: center;
+        }
+
+        .category-bar a {
+            color: #ffffff;
+            text-decoration: none;
+            font-size: 15px;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
+            transition: all 0.3s;
+            padding: 5px 0;
+            border-bottom: 2px solid transparent;
+        }
+
+        .category-bar a:hover {
+            color: #3498db;
+            border-bottom: 2px solid #3498db;
+        }
+
+        /* Hero Gallery */
+        .hero-gallery {
+            display: flex;
+            height: calc(100vh - 80px);
+            overflow: hidden;
+        }
+
+        .gallery-item {
+            flex: 1;
+            position: relative;
+            overflow: hidden;
+            transition: flex 0.5s ease;
+            cursor: pointer;
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center;
+        }
+
+        .gallery-item:hover {
+            flex: 4;
+        }
+
+        /* Events Section */
+        .events-section {
+            padding: 60px 40px;
+            background-color: #ffffff;
+        }
+
+        .events-content {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .events-title {
+            font-size: 42px;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 50px;
+            color: #2c3e50;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .events-title {
+            font-size: 42px;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 50px;
+            color: #2c3e50;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .events-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: repeat(2, 1fr);
+            gap: 30px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .event-card {
+            position: relative;
+            aspect-ratio: 9/3;
+            border-radius: 12px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .event-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: all 0.4s ease;
+        }
+
+        .event-card.inactive {
+            opacity: 0.4;
+        }
+
+        .event-card.active {
+            opacity: 1;
+            box-shadow: 0 8px 30px rgba(52, 152, 219, 0.6);
+            transform: scale(1.02);
+        }
+
+        .event-card.passed {
+            opacity: 0.2;
+            filter: grayscale(100%);
+        }
+
+        .event-card:hover {
+            transform: scale(1.05);
+        }
+
+        .event-card.active:hover {
+            transform: scale(1.07);
+        }
+
+        .event-card.passed .event-date {
+            background-color: rgba(149, 165, 166, 0.95);
+        }
+
+        .event-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.85);
+            z-index: 1000;
+            overflow-y: auto;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .event-modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+        }
+
+        .event-modal-content {
+            background-color: #3d4a5e;
+            border-radius: 16px;
+            max-width: 900px;
+            width: 100%;
+            position: relative;
+            box-shadow: 0 10px 50px rgba(0, 0, 0, 0.5);
+            animation: slideUp 0.3s ease;
+        }
+
+        .event-modal-header {
+            padding: 30px 40px 20px;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .event-modal-date {
+            display: inline-block;
+            background-color: rgba(52, 152, 219, 0.95);
+            padding: 8px 20px;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 18px;
+            color: #ffffff;
+            margin-bottom: 15px;
+        }
+
+        .event-modal-title {
+            font-size: 32px;
+            font-weight: bold;
+            color: #ffffff;
+            margin: 0;
+        }
+
+        .event-modal-body {
+            padding: 30px 40px;
+        }
+
+.event-modal-image {
+    width: 100%;
+    max-height: 600px;
+    height: auto;
+    object-fit: contain;
+    border-radius: 12px;
+    margin-bottom: 25px;
+}
+
+        .event-modal-description {
+            color: #e8e8e8;
+            font-size: 16px;
+            line-height: 1.9;
+            text-align: justify;
+        }
+
+        @media (max-width: 768px) {
+            .event-modal-header,
+            .event-modal-body {
+                padding: 20px;
+            }
+            
+            .event-modal-title {
+                font-size: 24px;
+            }
+            
+            .event-modal-image {
+                max-height: 250px;
+            }
+        }
+
+        /* Team Section */
+        .team-section {
+            padding: 60px 40px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .team-title {
+            font-size: 42px;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 50px;
+            color: #ffffff;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .team-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            align-items: start;
+        }
+
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+
+        .team-card {
+            background-color: rgba(61, 74, 94, 0.6);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            padding: 20px 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            min-height: 80px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .team-card:hover {
+            background-color: rgba(61, 74, 94, 0.8);
+            transform: translateY(-5px);
+        }
+
+        .team-card.active {
+            background: linear-gradient(to top, rgba(46, 69, 137, 0.9), transparent);
+            border-color: #f39c12;
+            box-shadow: 0 8px 25px rgba(255, 255, 255, 0);
+        }
+
+        /* .team-number {
+            font-size: 36px;
+            font-weight: bold;
+            font-style: italic;
+            color: #f39c12;
+            line-height: 1;
+            margin-bottom: 5px;
+        } */
+
+        .team-number-image {
+            width: 50px;
+            height: 50px;
+            object-fit: contain;
+            margin-bottom: 5px;
+        }
+
+        .team-role {
+            font-size: 13px;
+            color: #ffffff;
+            font-weight: 500;
+        }
+
+        .team-image-container {
+            background-color: rgba(61, 74, 94, 0.4);
+            border-radius: 12px;
+            overflow: hidden;
+            aspect-ratio: 16/9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .team-image {
+            display: none;
+            width: 100%;
+            height: 100%;
+        }
+
+        .team-image.active {
+            display: block;
+        }
+
+        .team-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .team-placeholder {
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 18px;
+            text-align: center;
+        }
+
+        @media (max-width: 1024px) {
+            .team-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .team-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .team-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        /* History Section */
+        .history-section {
+            padding: 60px 40px;
+            background-color: #ffffff;
+        }
+
+        .history-content {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .history-title {
+            font-size: 42px;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 50px;
+            color: #2c3e50;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .history-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 25px;
+            margin-bottom: 40px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .history-card {
+            position: relative;
+            aspect-ratio: 6/12;
+            border-radius: 12px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+        }
+
+        .history-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 8px 25px rgba(52, 152, 219, 0.5);
+        }
+
+        .history-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: brightness(0.7);
+            transition: filter 0.3s ease;
+        }
+
+        .history-card:hover img {
+            filter: brightness(0.5);
+        }
+
+        .card-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 20px;
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.9), transparent);
+        }
+
+        .card-title {
+            color: #ffffff;
+            font-size: 15px;
+            font-weight: 500;
+            text-align: center;
+            margin-bottom: 10px;
+            line-height: 1.3;
+        }
+
+        .card-period {
+            background-color: rgba(52, 152, 219, 0.95);
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 16px;
+            color: #ffffff;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .history-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.85);
+            z-index: 1000;
+            overflow-y: auto;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .history-modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal-content {
+            background-color: #3d4a5e;
+            border-radius: 16px;
+            max-width: 800px;
+            width: 100%;
+            position: relative;
+            box-shadow: 0 10px 50px rgba(0, 0, 0, 0.5);
+            animation: slideUp 0.3s ease;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .modal-header {
+            padding: 30px 40px 20px;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .modal-period {
+            display: inline-block;
+            background-color: rgba(52, 152, 219, 0.95);
+            padding: 8px 20px;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 18px;
+            color: #ffffff;
+            margin-bottom: 15px;
+        }
+
+        .modal-title {
+            font-size: 32px;
+            font-weight: bold;
+            color: #ffffff;
+            margin-bottom: 10px;
+        }
+
+        .modal-body {
+            padding: 30px 40px 40px;
+        }
+
+        .modal-description {
+            color: #e8e8e8;
+            font-size: 16px;
+            line-height: 1.9;
+            text-align: justify;
+            white-space: pre-line;
+        }
+
+        .close-button {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 40px;
+            height: 40px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border: none;
+            border-radius: 50%;
+            color: #ffffff;
+            font-size: 24px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .close-button:hover {
+            background-color: rgba(231, 76, 60, 0.8);
+            transform: rotate(90deg);
+        }
+
+        @media (max-width: 1024px) {
+            .history-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .history-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 15px;
+            }
+
+            .modal-header, .modal-body {
+                padding: 20px;
+            }
+
+            .modal-title {
+                font-size: 24px;
+            }
+        }
+
+        /* Acrobatic Section */
+        .acrobatic-section {
+            padding: 60px 40px;
+            background-color: #32354d;
+        }
+
+        .acrobatic-content {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .acrobatic-title {
+            font-size: 42px;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 50px;
+            color: #ffffff;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .video-container {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+            justify-content: center;
+        }
+
+        .video-wrapper {
+            flex: 1;
+            max-width: 900px;
+        }
+
+        .video-frame {
+            position: relative;
+            width: 100%;
+            padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
+            background-color: #000000;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .video-frame iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        .video-title {
+            text-align: center;
+            color: #ffffff;
+            font-size: 24px;
+            font-weight: bold;
+            margin-top: 20px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .video-arrow {
+            width: 60px;
+            height: 60px;
+            background-color: rgba(61, 74, 94, 0.8);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            color: #ffffff;
+            font-size: 40px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .video-arrow:hover {
+            background-color: rgba(52, 152, 219, 0.9);
+            border-color: #3498db;
+            transform: scale(1.1);
+        }
+
+        .video-arrow:active {
+            transform: scale(0.95);
+        }
+
+        .video-arrow span {
+            line-height: 1;
+            margin-top: -5px;
+        }
+
+        @media (max-width: 768px) {
+            .video-container {
+                gap: 15px;
+            }
+            
+            .video-arrow {
+                width: 45px;
+                height: 45px;
+                font-size: 30px;
+            }
+            
+            .video-title {
+                font-size: 18px;
+            }
+        }
+
+        /* Footer */
+        .footer {
+            background-color: #3d4a5e;
+            padding: 40px;
+            position: relative;
+        }
+
+        .footer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 15px;
+            background: linear-gradient(to right, 
+                #009246 0%, 
+                #009246 33.33%, 
+                #ffffff 33.33%, 
+                #ffffff 66.66%, 
+                #CE2B37 66.66%, 
+                #CE2B37 100%
+            );
+        }
+
+        .footer-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .footer-left {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .footer-logo {
+            height: 80px;
+        }
+
+        .footer-text h3 {
+            color: #ffffff;
+            font-size: 20px;
+            font-weight: bold;
+            letter-spacing: 2px;
+            line-height: 1.2;
+            margin: 0;
+        }
+
+        .footer-right {
+            text-align: right;
+        }
+
+        .footer-social-title {
+            color: #ffffff;
+            font-size: 14px;
+            margin-bottom: 15px;
+            font-weight: 500;
+        }
+
+        .footer-social {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+        }
+
+        .social-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ffffff;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            font-size: 16px;
+        }
+
+        .social-icon:hover {
+            background-color: #3498db;
+            border-color: #3498db;
+            transform: translateY(-3px);
+        }
+
+        .footer-disclaimer {
+            padding: 25px 40px;
+            text-align: center;
+            position: relative;
+        }
+
+        .footer-disclaimer p {
+            color: #ffffff;
+            font-size: 14px;
+            line-height: 1.8;
+            margin: 0;
+            font-weight: 500;
+        }
+
+        @media (max-width: 768px) {
+            .footer-content {
+                flex-direction: column;
+                gap: 30px;
+                text-align: center;
+            }
+            
+            .footer-right {
+                text-align: center;
+            }
+            
+            .footer-social {
+                justify-content: center;
+            }
+        }
+
+        /* === Smoke Selector === */
+        .smoke-selector {
+            position: fixed;
+            bottom: 30px;
+            left: 30px;
+            width: 60px;
+            height: 60px;
+            background-color: rgba(61, 74, 94, 0.9);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 999;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .smoke-selector:hover {
+            background-color: rgba(52, 152, 219, 0.9);
+            border-color: #3498db;
+            transform: scale(1.1);
+        }
+
+        .smoke-selector i {
+            color: #ffffff;
+            font-size: 24px;
+        }
+
+        /* === Smoke Menu === */
+        .smoke-menu {
+            position: fixed;
+            bottom: 100px;
+            left: 45px;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+            z-index: 998;
+            transition: all 0.3s ease;
+        }
+
+        .smoke-menu.active {
+            display: flex;
+        }
+
+        .smoke-option {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 2px solid rgb(13, 56, 106);
+            cursor: pointer;
+            transition: transform 0.2s ease, border-color 0.2s;
+        }
+
+        .smoke-option:hover {
+            transform: scale(1.2);
+            border-color: #ffffff;
+        }
+
+        @media (max-width: 768px) {
+            .smoke-selector {
+                width: 50px;
+                height: 50px;
+                bottom: 20px;
+                left: 20px;
+            }
+            
+            .smoke-selector i {
+                font-size: 20px;
+            }
+
+            .smoke-option {
+                width: 35px;
+                height: 35px;
+            }
+
+            .smoke-menu {
+                bottom: 80px;
+                left: 35px;
+            }
+        }
+
+        /* Music Player */
+        .music-player {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            background-color: rgba(61, 74, 94, 0.9);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 999;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .music-player:hover {
+            background-color: rgba(52, 152, 219, 0.9);
+            border-color: #3498db;
+            transform: scale(1.1);
+        }
+
+        .music-player i {
+            color: #ffffff;
+            font-size: 24px;
+        }
+
+        @media (max-width: 768px) {
+            .music-player {
+                width: 50px;
+                height: 50px;
+                bottom: 20px;
+                right: 20px;
+            }
+            
+            .music-player i {
+                font-size: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="logo-container">
+            <img class="logo" src="assets/icons/logo-am.png" alt="Aeronautica Militare">
+        </div>
+        
+        <div class="category-bar">
+            <a href="#home">Home</a>
+            <a href="#eventi">programma</a>
+            <a href="#formazione">Flotta</a>
+            <a href="#storia">Storia</a>
+            <a href="#programma">Acrobazie</a>
+            <a href="#contatti">Contatti</a>
+        </div>
+    </header>
+
+    <!-- Hero Gallery -->
+    <div class="hero-gallery">
+        <div class="gallery-item">
+            <img src="assets/hero/photo 1.jpg" alt="Gallery 1">
+        </div>
+        <div class="gallery-item">
+            <img src="assets/hero/photo 2.jpeg" alt="Gallery 2">
+        </div>
+        <div class="gallery-item">
+            <img src="assets/hero/photo 3.jpg" alt="Gallery 3">
+        </div>
+        <div class="gallery-item">
+            <img src="assets/hero/photo 4.jpg" alt="Gallery 4">
+        </div>
+        <div class="gallery-item">
+            <img src="assets/hero/photo 5.jpg" alt="Gallery 5">
+        </div>
+        <div class="gallery-item">
+            <img src="assets/hero/photo 6.jpg" alt="Gallery 6">
+        </div>
+        <div class="gallery-item">
+            <img src="assets/hero/photo 7.jpg" alt="Gallery 7">
+        </div>
+        <div class="gallery-item">
+            <img src="assets/hero/photo 8.jpg" alt="Gallery 8">
+        </div>
+    </div>
+
+    <!-- Events Section -->
+    <section class="events-section" id="eventi">
+        <div class="events-content">
+            <h1 class="events-title">Programma Attività della Pattuglia Acrobatica Nazionale</h1>
+            <div class="events-grid" id="eventsGrid"></div>
+        </div>
+    </section>
+
+    <!-- Team Section -->
+    <section class="team-section" id="formazione">
+        <h1 class="team-title">FORMAZIONE 2025</h1>
+        <div class="team-container">
+            <div class="team-grid" id="teamGrid"></div>
+            <div class="team-image-container">
+                <div class="team-placeholder" id="teamPlaceholder">Seleziona un pilota</div>
+                <div class="team-image" id="teamImage">
+                    <img id="teamPhoto" src="" alt="Pilota">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- History Section -->
+    <section class="history-section" id="storia">
+        <div class="history-content">
+            <h1 class="history-title">Storia delle Frecce Tricolori</h1>
+            <div class="history-grid" id="historyGrid"></div>
+        </div>
+    </section>
+
+    <div class="history-modal" id="historyModal">
+        <div class="modal-content">
+            <button class="close-button" onclick="closeModal()">×</button>
+            <div class="modal-header">
+                <div class="modal-period" id="modalPeriod"></div>
+                <h2 class="modal-title" id="modalTitle"></h2>
+            </div>
+            <div class="modal-body">
+                <p class="modal-description" id="modalDescription"></p>
+            </div>
+        </div>
+    </div>
+
+    <div class="event-modal" id="eventModal">
+        <div class="event-modal-content">
+            <button class="close-button" onclick="closeEventModal()">×</button>
+            <div class="event-modal-header">
+                <div class="event-modal-date" id="eventModalDate"></div>
+                <h2 class="event-modal-title" id="eventModalTitle"></h2>
+            </div>
+            <div class="event-modal-body">
+                <img id="eventModalImage" src="" alt="Evento" class="event-modal-image">
+                <p class="event-modal-description" id="eventModalDescription"></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Programma Acrobatico Section -->
+    <section class="acrobatic-section" id="programma">
+        <div class="acrobatic-content">
+            <h1 class="acrobatic-title">Programma Acrobatico</h1>
+            <div class="video-container">
+                <button class="video-arrow video-arrow-left" onclick="changeVideo(-1)">
+                    <span>‹</span>
+                </button>
+                
+                <div class="video-wrapper">
+                    <div class="video-frame" id="videoFrame"></div>
+                    <div class="video-title" id="videoTitle"></div>
+                </div>
+                
+                <button class="video-arrow video-arrow-right" onclick="changeVideo(1)">
+                    <span>›</span>
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer" id="contatti">
+        <div class="footer-content">
+            <div class="footer-left">
+                <img src="assets/icons/logo-am.png" alt="Aeronautica Militare" class="footer-logo">
+            </div>
+            
+            <div class="footer-right">
+                <p class="footer-social-title">Seguici su</p>
+                <div class="footer-social">
+                    <a href="#" class="social-icon"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" class="social-icon"><i class="fab fa-instagram"></i></a>
+                    <a href="#" class="social-icon"><i class="fab fa-x-twitter"></i></a>
+                    <a href="#" class="social-icon"><i class="fab fa-tiktok"></i></a>
+                    <a href="#" class="social-icon"><i class="fab fa-threads"></i></a>
+                    <a href="#" class="social-icon"><i class="fab fa-linkedin-in"></i></a>
+                    <a href="#" class="social-icon"><i class="fab fa-youtube"></i></a>
+                    <a href="#" class="social-icon"><i class="fab fa-spotify"></i></a>
+                    <a href="#" class="social-icon"><i class="fab fa-vimeo-v"></i></a>
+                    <a href="#" class="social-icon"><i class="fab fa-whatsapp"></i></a>
+                    <a href="#" class="social-icon"><i class="fab fa-telegram"></i></a>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer-disclaimer">
+            <p>DISCLAIMER: Questo sito è stato creato esclusivamente a scopo videoludico e di intrattenimento. Tutti i contenuti, le informazioni, le immagini e i dati presentati sono puramente fittizi e non rappresentano informazioni reali o ufficiali dell'Aeronautica Militare Italiana o della Pattuglia Acrobatica Nazionale "Frecce Tricolori".</p>
+        </div>
+
+        <!-- Smoke Color Selector -->
+        <div class="smoke-selector" id="smokeSelector">
+            <i class="fas fa-fire-flame-curved"></i>
+        </div>
+
+        <div class="smoke-menu" id="smokeMenu">
+            <button class="smoke-option" data-color="white" style="background-color: #ffffff;"></button>
+            <button class="smoke-option" data-color="green" style="background-color: #009246;"></button>
+            <button class="smoke-option" data-color="red" style="background-color: #CE2B37;"></button>
+        </div>
+
+        <!-- Music Player -->
+        <div class="music-player" id="musicPlayer" onclick="toggleMusic()">
+            <i class="fas fa-music" id="musicIcon"></i>
+        </div>
+
+        <audio id="backgroundMusic" loop>
+            <source src="assets/music/inno.mp3" type="audio/mpeg">
+        </audio>
+    </footer>
+
+    <script>
+        // Mouse Personalizzato
+        const imageURL = "assets/icons/moused.png"; // immagine da usare
+        const imageSize = 60; // dimensione dell'immagine
+        const easing = 0.05; // velocità di inseguimento (più alto = più reattivo)
+
+        // === Cerchio pieno ===
+        const cursor = document.createElement('div');
+        cursor.style.cssText = `
+            width: 10px;
+            height: 10px;
+            background: rgba(0, 0, 0, 0.95);
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 10001;
+            transition: transform 0.1s ease;
+        `;
+        document.body.appendChild(cursor);
+
+        // === Immagine che ruota ===
+        const cursorImg = document.createElement('img');
+        cursorImg.src = imageURL;
+        cursorImg.style.cssText = `
+            width: ${imageSize}px;
+            height: ${imageSize}px;
+            position: fixed;
+            pointer-events: none;
+            top: 0;
+            left: 0;
+            z-index: 10000;
+            opacity: 0;
+            transform-origin: center center;
+            transition: opacity 0.3s ease;
+        `;
+        document.body.appendChild(cursorImg);
+
+        // === Canvas per la scia di fumo ===
+        const smokeCanvas = document.createElement('canvas');
+        smokeCanvas.id = 'smoke-canvas';
+        smokeCanvas.style.cssText = `
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 9999;
+        `;
+        document.body.appendChild(smokeCanvas);
+        const ctx = smokeCanvas.getContext('2d');
+        smokeCanvas.width = window.innerWidth;
+        smokeCanvas.height = window.innerHeight;
+
+        // === Variabili ===
+        let mouseX = 0, mouseY = 0;
+        let imgX = 0, imgY = 0;
+        let lastX = 0, lastY = 0;
+        let lastMoveTime = Date.now();
+        let rotation = 0;
+
+        // === Fumo ===
+        class SmokeParticle {
+            constructor(x, y) {
+                this.x = x;
+                this.y = y;
+                this.size = 10;
+                this.alpha = 0.5 + Math.random() * 0.3;
+                this.life = 1;
+                this.fadeSpeed = 0.015 + Math.random() * 0.01;
+                this.vx = (Math.random() - 0.5) * 0.6;
+                this.vy = (Math.random() - 1.5) * 0.6;
+            }
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+                this.life -= this.fadeSpeed;
+                this.alpha = Math.max(0, this.life);
+            }
+            draw(ctx) {
+                if (this.life <= 0) return;
+                const gradient = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, this.size);
+                gradient.addColorStop(0, `rgba(255,255,255,${this.alpha})`); // bianco al centro
+                gradient.addColorStop(1, `rgba(255,255,255,0)`); // trasparente ai bordi
+                ctx.fillStyle = gradient;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+        const smokeParticles = [];
+
+        // === Movimento ===
+        document.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+            cursor.style.left = mouseX - 5 + 'px';
+            cursor.style.top = mouseY - 5 + 'px';
+
+            const now = Date.now();
+            const dx = e.clientX - lastX;
+            const dy = e.clientY - lastY;
+
+            if (dx !== 0 || dy !== 0) {
+                const targetRotation = Math.atan2(dy, dx) * 180 / Math.PI;
+                let delta = targetRotation - rotation;
+                if (delta > 180) delta -= 360;
+                if (delta < -180) delta += 360;
+                rotation += delta * 0.15;
+                cursorImg.style.opacity = 1;
+                lastMoveTime = now;
+                lastX = e.clientX;
+                lastY = e.clientY;
+
+                // Crea particelle di fumo dietro l'immagine
+                smokeParticles.push(new SmokeParticle(imgX, imgY));
+                if (smokeParticles.length > 100) smokeParticles.shift(); // limita numero massimo
+            }
+        });
+
+        // === Animazione ===
+        function animate() {
+            imgX += (mouseX - imgX) * easing;
+            imgY += (mouseY - imgY) * easing;
+            cursorImg.style.transform = `translate(${imgX - imageSize / 2}px, ${imgY - imageSize / 2}px) rotate(${rotation}deg)`;
+
+            // Nasconde immagine se il mouse è fermo da più di 0.8 secondi
+            const now = Date.now();
+            if (now - lastMoveTime > 800) {
+                cursorImg.style.opacity = 0;
+            }
+
+            // Disegna fumo
+            ctx.clearRect(0, 0, smokeCanvas.width, smokeCanvas.height);
+            for (let i = smokeParticles.length - 1; i >= 0; i--) {
+                const p = smokeParticles[i];
+                p.update();
+                p.draw(ctx);
+                if (p.life <= 0) smokeParticles.splice(i, 1);
+            }
+
+            requestAnimationFrame(animate);
+        }
+        animate();
+
+        // Resize
+        window.addEventListener('resize', () => {
+            smokeCanvas.width = window.innerWidth;
+            smokeCanvas.height = window.innerHeight;
+        });
+
+        // Array degli eventi con date (formato: YYYY-MM-DD) - MAX 6 EVENTI
+        const events = [
+            { 
+                date: '2025-11-15',
+                image: 'assets/events/logo-am.png',
+                menuImage: 'assets/events/1511.png',
+                location: 'milano',
+                title: 'Addestramento di Volo',
+                description: 'Sessione di addestramento operativo con partenza dalla base di Milano Malpensa. La formazione eseguirà un circuito completo dell\'aeroporto seguito da un sorvolo della città, permettendo ai piloti di affinare la precisione delle manovre in ambiente urbano e di testare le procedure di volo in formazione stretta.'
+            },
+            { 
+                date: '2025-11-22', 
+                image: 'assets/events/logo-am.png',
+                menuImage: 'assets/events/2211.png',
+                location: 'milano',
+                title: 'Addestramento di Volo',
+                description: 'Sessione di addestramento operativo con partenza dalla base di Milano Malpensa. La formazione eseguirà un circuito completo dell\'aeroporto seguito da un sorvolo della città, permettendo ai piloti di affinare la precisione delle manovre in ambiente urbano e di testare le procedure di volo in formazione stretta.'
+            },
+            { 
+                date: '2025-11-29', 
+                image: 'assets/events/logo-am.png',
+                menuImage: 'assets/events/2911.png',
+                location: 'milano',
+                title: 'Addestramento di Volo',
+                description: 'Sessione di addestramento operativo con partenza dalla base di Milano Malpensa. La formazione eseguirà un circuito completo dell\'aeroporto seguito da un sorvolo della città, permettendo ai piloti di affinare la precisione delle manovre in ambiente urbano e di testare le procedure di volo in formazione stretta.'
+            },
+            { 
+                date: '2025-12-06', 
+                image: 'assets/events/logo-am.png',
+                menuImage: 'assets/events/0612.png',
+                location: 'milano',
+                title: 'Addestramento di Volo',
+                description: 'Sessione di addestramento operativo con partenza dalla base di Milano Malpensa. La formazione eseguirà un circuito completo dell\'aeroporto seguito da un sorvolo della città, permettendo ai piloti di affinare la precisione delle manovre in ambiente urbano e di testare le procedure di volo in formazione stretta.'
+            },
+            { 
+                date: '2025-12-08', 
+                image: 'assets/events/logo-am.png',
+                menuImage: 'assets/events/0812.png',
+                location: 'milano',
+                title: 'Presentazione Veicoli',
+                description: 'PRESENTAZIONE DEI VEICOLI, INGRESSO CON SORVOLO A BASSA QUOTA CON SCINTILLA TRICOLORE'
+            },
+            { 
+                date: '2025-12-13', 
+                image: 'assets/events/logo-am.png',
+                menuImage: 'assets/events/1312.png',
+                location: 'milano',
+                title: 'Addestramento di Volo',
+                description: 'Sessione di addestramento operativo con partenza dalla base di Milano Malpensa. La formazione eseguirà un circuito completo dell\'aeroporto seguito da un sorvolo della città, permettendo ai piloti di affinare la precisione delle manovre in ambiente urbano e di testare le procedure di volo in formazione stretta.'
+            },
+        ];
+
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            const day = date.getDate();
+            const months = ['GEN', 'FEB', 'MAR', 'APR', 'MAG', 'GIU', 'LUG', 'AGO', 'SET', 'OTT', 'NOV', 'DIC'];
+            const month = months[date.getMonth()];
+            return `${day} ${month}`;
+        }
+
+        function updateEvents() {
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            
+            let nextEventIndex = -1;
+            let minDiff = Infinity;
+
+            // Trova il prossimo evento
+            events.forEach((event, index) => {
+                const eventDate = new Date(event.date);
+                eventDate.setHours(0, 0, 0, 0);
+                const diff = eventDate - today;
+                
+                if (diff >= 0 && diff < minDiff) {
+                    minDiff = diff;
+                    nextEventIndex = index;
+                }
+            });
+
+            const eventsGrid = document.getElementById('eventsGrid');
+            eventsGrid.innerHTML = '';
+
+            events.forEach((event, index) => {
+                const eventDate = new Date(event.date);
+                eventDate.setHours(0, 0, 0, 0);
+                const isPassed = eventDate < today;
+                const isActive = index === nextEventIndex;
+
+                const card = document.createElement('div');
+                card.className = 'event-card';
+                
+                if (isPassed) {
+                    card.classList.add('passed');
+                } else if (isActive) {
+                    card.classList.add('active');
+                } else {
+                    card.classList.add('inactive');
+                }
+
+                card.innerHTML = `
+                    <img src="${event.menuImage || event.image}" alt="${event.location}">
+                    <div class="event-date">${formatDate(event.date)}</div>
+                `;
+
+                card.addEventListener('click', () => openEventModal(index));
+
+                eventsGrid.appendChild(card);
+            });
+        }
+
+        // Aggiorna gli eventi al caricamento
+        updateEvents();
+
+        // Aggiorna gli eventi ogni giorno a mezzanotte
+        setInterval(() => {
+            const now = new Date();
+            if (now.getHours() === 0 && now.getMinutes() === 0) {
+                updateEvents();
+            }
+        }, 60000);
+
+        // Array dei membri del team
+        const teamMembers = [
+            { number: '1', role: 'Capoformazione', image: 'assets/team/pony1.png', numberPng: 'assets/team/1.png' },
+            { number: '2', role: '1° Gregario Sinistro', image: 'assets/team/pony2.png', numberPng: 'assets/team/2.png' },
+            { number: '3', role: '1° Gregario Destro', image: 'assets/team/pony3.png', numberPng: 'assets/team/3.png' },
+            { number: '4', role: '2° Gregario Sinistro', image: 'assets/team/cartellino.png', numberPng: 'assets/team/4.png' },
+            { number: '5', role: '2° Gregario Destro', image: 'assets/team/cartellino.png', numberPng: 'assets/team/5.png' },
+            { number: '6', role: '1° Fanalino', image: 'assets/team/cartellino.png', numberPng: 'assets/team/6.png' },
+            //{ number: '7', role: '2° Fanalino', image: 'assets/team/cartellino.png', numberPng: 'assets/team/7.png' },
+            //{ number: '8', role: '3° Fanalino', image: 'assets/team/cartellino.png', numberPng: 'assets/team/8.png' },
+            //{ number: '9', role: '4° Fanalino', image: 'assets/team/cartellino.png', numberPng: 'assets/team/9.png' },
+            //{ number: '10', role: 'Solista', image: 'assets/team/cartellino.png', numberPng: 'assets/team/10.png' }
+        ];
+
+        function initTeam() {
+            const teamGrid = document.getElementById('teamGrid');
+            
+            teamMembers.forEach((member, index) => {
+                const card = document.createElement('div');
+                card.className = 'team-card';
+                card.innerHTML = `
+                    <img src="${member.numberPng}" alt="${member.number}" class="team-number-image">
+                    <div class="team-role">${member.role}</div>
+                `;
+                
+                card.addEventListener('click', () => showTeamMember(index));
+                teamGrid.appendChild(card);
+            });
+            
+            // Seleziona automaticamente il Comandante (index 0) al caricamento
+            showTeamMember(0);
+        }
+
+        function showTeamMember(index) {
+            const cards = document.querySelectorAll('.team-card');
+            const member = teamMembers[index];
+            
+            // Rimuovi active da tutte le card
+            cards.forEach(card => card.classList.remove('active'));
+            
+            // Aggiungi active alla card selezionata
+            cards[index].classList.add('active');
+            
+            // Nascondi placeholder e mostra immagine
+            document.getElementById('teamPlaceholder').style.display = 'none';
+            document.getElementById('teamImage').classList.add('active');
+            
+            // Aggiorna immagine
+            document.getElementById('teamPhoto').src = member.image;
+        }
+
+        // Inizializza al caricamento
+        initTeam();
+
+        // Dati della storia
+        const historyData = [
+            {
+                period: '1952-1957',
+                title: 'La genesi',
+                image: 'assets/history/storia.png',
+                description: 'Prima della costituzione del 313° Gruppo Addestramento Acrobatico, per circa un decennio, l\'Aeronautica Militare affida a rotazione a un reparto da caccia il compito di costituire una pattuglia acrobatica.\n\nIl primo ad essere investito di questa responsabilità è, nel 1952-1953, il 4° Stormo che dà vita alla pattuglia "Cavallino Rampante", composta da quattro DH.100 Vampire, primi velivoli a getto in servizio con l\'Aeronautica Militare.\n\nI vasti consensi e l\'entusiasmo suscitato in Italia e all\'estero convincono la Forza Armata a proseguire in questo settore, passando però il testimone alla 5ª Aerobrigata, dotata di nuovi F-84G Thunderjet. Nel 1953 nasce così la pattuglia "Guizzo", poi ribattezzata "Getti Tonanti".\n\nCon l\'F-84G vola anche la 51ª Aerobrigata che, nel 1955-1956, con la pattuglia "Tigri Bianche", rappresenta l\'Aeronautica Militare.\n\nNel 1957 ritorna la formazione "Cavallino Rampante" della 4ª Aerobrigata, con quattro F-86E Sabre MK4, i primi velivoli italiani dotati di impianto fumogeno regolabile.'
+            },
+            {
+                period: '1958-1960',
+                title: 'Nasce la Pattuglia Acrobatica Nazionale',
+                image: 'assets/history/storia.png',
+                description: 'La Pattuglia di riserva per il 1957 è quella dei "Diavoli Rossi" della 6ª Aerobrigata, destinata a scrivere pagine importanti dell\'acrobazia aerea collettiva italiana.\n\nEquipaggiati con il possente F-84F Thunderstreak, diventano "pattuglia titolare" dal 1958. Sono i primi a eseguire la figura della "bomba" verso il basso e conquistano il primo posto in una competizione NATO nei Paesi Bassi.\n\nNel 1959 l\'Aeronautica Militare dispone di tre pattuglie: i "Lanceri Neri" della 2ª Aerobrigata, i "Getti Tonanti" della 5ª e i "Diavoli Rossi".\n\nI "Lanceri Neri" portano i colori italiani fino in Iran, mentre i "Diavoli Rossi" si esibiscono negli Stati Uniti con grande successo.\n\nNel 1960 tornano i "Getti Tonanti", ora su F-84F con livrea olimpica, protagonisti delle Olimpiadi di Roma. Nello stesso anno, per razionalizzare risorse e continuità, l\'Aeronautica decide di creare un reparto unico dedicato: a Rivolto sta per nascere il 313° Gruppo.'
+            },
+            {
+                period: '1961-1962',
+                title: 'Le premesse per la creazione della PAN',
+                image: 'assets/history/storia.png',
+                description: 'Il 1° marzo 1961, presso la base di Rivolto, nasce il Nucleo Speciale Acrobatico — divenuto il 1° luglio 313° Gruppo Addestramento Acrobatico — con l\'obiettivo di perfezionare l\'addestramento dei piloti e preservarne l\'esperienza.\n\nIl reparto, formato intorno alla pattuglia "Cavallino Rampante" della 4ª Aerobrigata, utilizza i CL.13 Sabre Mk.4, versione canadese dell\'F-86E.\n\nIl 1° maggio 1961 la nuova Pattuglia Acrobatica Nazionale si presenta ufficialmente a Trento, e il 1° luglio diventa il 313° Gruppo Addestramento Acrobatico.\n\nNel 1962 gli aerei assumono la livrea con le tre frecce tricolori: è nata ufficialmente la Pattuglia Acrobatica Nazionale "Frecce Tricolori".'
+            },
+            {
+                period: '1963-1981',
+                title: 'La PAN si ingrandisce',
+                image: 'assets/history/storia.png',
+                description: 'Dal 1963 la PAN amplia la formazione a 9 velivoli più il solista e adotta un aereo interamente italiano: il Fiat G.91PAN, versione modificata del caccia tattico leggero G.91.\n\nLe Frecce Tricolori sviluppano due programmi distinti di volo — alto e basso — e introducono figure iconiche come il cardioide, la bomba, l\'Arizona e l\'Apollo 313.\n\nVeloce, maneggevole e spettacolare, il G.91PAN offre esibizioni più dinamiche e vicine al pubblico.\n\nPer 18 anni, dal 1963 al 1981, il "novantuno" accompagna la PAN in centinaia di manifestazioni in Italia e nel mondo, consolidando la fama delle Frecce Tricolori come simbolo dell\'eccellenza aeronautica nazionale.'
+            },
+            {
+                period: '1982-1991',
+                title: 'La PAN con gli MB.339',
+                image: 'assets/history/storia.png',
+                description: 'Il 1981 segna l\'ultima stagione con il G.91: il suo successore è l\'Aermacchi MB.339, nuovo velivolo d\'addestramento dell\'Aeronautica Militare, modificato per l\'acrobazia con un impianto fumogeno sotto le ali.\n\nIl primo MB.339PAN arriva a Rivolto il 6 gennaio 1982 e il "passaggio di consegne" avviene il 27 aprile con una formazione mista di quattro G.91 e cinque MB.339.\n\nDalla stagione 1982 la PAN torna a esibirsi nella classica formazione 9+1.\n\nPiù agile e maneggevole del suo predecessore, l\'MB.339 permette evoluzioni più vicine al pubblico, valorizzando la precisione e l\'armonia delle manovre che rendono unico lo spettacolo delle Frecce Tricolori.'
+            },
+            {
+                period: '1992-2004',
+                title: 'La PAN nel mondo',
+                image: 'assets/history/storia.png',
+                description: 'Nel 1992 le Frecce Tricolori sorvolano le cascate del Niagara durante il tour negli Stati Uniti per il 500° anniversario della scoperta dell\'America.\n\nNel 1995 si esibiscono per la prima volta nell\'Europa dell\'Est e, nel 2003, a Mosca sull\'aeroporto di Zhukovsky. L\'anno seguente diventano il primo team acrobatico a esibirsi a Beirut dopo la guerra.\n\nNel 2005 vincono il trofeo "King Hussein Memorial Sword" come miglior display all\'Air Tattoo di Fairford.\n\nNegli anni Novanta e Duemila partecipano a tournée nei Paesi Arabi — Kuwait, Emirati, Qatar, Siria e Oman — consolidando il ruolo di ambasciatrici dell\'Italia nel mondo.'
+            },
+            {
+                period: '2005-2009',
+                title: 'La PAN e lo Sport',
+                image: 'assets/history/storia.png',
+                description: 'In occasione delle Olimpiadi Invernali di Torino 2006, le Frecce Tricolori realizzano nel cielo di Rivolto i cinque cerchi olimpici sottolineati dai fumi tricolori, in un video poi utilizzato dalla RAI come spot ufficiale.\n\nIl 10 luglio dello stesso anno, la PAN rende omaggio alla Nazionale di calcio campione del mondo a Pratica di Mare.\n\nNel 2008 le Frecce Tricolori ricevono il "Premio Leonardo" alla carriera per la promozione dell\'immagine italiana nel mondo.\n\nL\'anno seguente, nel 2009, si esibiscono per la prima volta in Libia e partecipano al salone aerospaziale di Dubai, confermandosi ambasciatrici di eccellenza e sportività.'
+            },
+            {
+                period: '2010 ad oggi',
+                title: 'Pattuglia da record e NAT2024',
+                image: 'assets/history/storia.png',
+                description: 'Il 18 e 19 settembre 2021 la base di Rivolto ospita le celebrazioni per il 60° anniversario della Pattuglia Acrobatica Nazionale, con la partecipazione di pattuglie acrobatiche straniere, velivoli storici e assetti dell\'Aeronautica Militare. Nonostante le restrizioni dovute alla pandemia, l\'evento richiama migliaia di appassionati.\n\nIl 18 giugno 2022 la PAN entra nel Guinness World Records come pattuglia acrobatica militare con il maggior numero di velivoli in formazione.\n\nNel 2024 le Frecce Tricolori tornano in Canada e Stati Uniti con il "North America Tour 2024", rinnovando la tradizione iniziata oltre trent\'anni prima con la missione Columbus.'
+            }
+        ];
+
+        function initHistory() {
+            const historyGrid = document.getElementById('historyGrid');
+            
+            historyData.forEach((item, index) => {
+                const card = document.createElement('div');
+                card.className = 'history-card';
+                card.innerHTML = `
+                    <img src="${item.image}" alt="${item.title}">
+                    <div class="card-overlay">
+                        <div class="card-title">${item.title}</div>
+                        <div class="card-period">${item.period}</div>
+                    </div>
+                `;
+                
+                card.addEventListener('click', () => openModal(index));
+                historyGrid.appendChild(card);
+            });
+        }
+
+        function openModal(index) {
+            const item = historyData[index];
+            const modal = document.getElementById('historyModal');
+            
+            document.getElementById('modalPeriod').textContent = item.period;
+            document.getElementById('modalTitle').textContent = item.title;
+            document.getElementById('modalDescription').textContent = item.description;
+            
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function openEventModal(index) {
+            const event = events[index];
+            const modal = document.getElementById('eventModal');
+            
+            document.getElementById('eventModalImage').src = event.image;
+            document.getElementById('eventModalDate').textContent = formatDate(event.date);
+            document.getElementById('eventModalTitle').textContent = event.title;
+            document.getElementById('eventModalDescription').textContent = event.description;
+            
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeEventModal() {
+            const modal = document.getElementById('eventModal');
+            modal.classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+
+        // Chiudi modal cliccando fuori
+        document.getElementById('eventModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeEventModal();
+            }
+        });
+
+        function closeModal() {
+            const modal = document.getElementById('historyModal');
+            modal.classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+
+        // Chiudi modal cliccando fuori
+        document.getElementById('historyModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeModal();
+            }
+        });
+
+        // Chiudi modal con tasto ESC
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeModal();
+                closeEventModal();
+            }
+        });
+
+        // Inizializza la sezione storia
+        initHistory();
+
+        // Array dei video acrobatici
+        const acrobaticVideos = [
+            {
+                title: 'Arizona-scampanata',
+                vimeoId: '734256856'
+            },
+            {
+                title: 'Cardioide e separazione del solista',
+                vimeoId: '734257086'
+            },
+            {
+                title: 'Cuore tonneau rovescio tonneau',
+                vimeoId: '734256987'
+            },
+            {
+                title: 'Apertura della bomba e incrocio del solista',
+                vimeoId: '734256805'
+            },
+            {
+                title: 'Incrocio cuore Tonneau Schneider positiva pull-up negativo',
+                vimeoId: '734256962'
+            },
+            {
+                title: 'Incrocio della bomba e looping di rientro',
+                vimeoId: '734256781'
+            },
+            {
+                title: 'Looping di ingresso',
+                vimeoId: '734257118'
+            },
+            {
+                title: 'postolooping calice tonneau lento',
+                vimeoId: '734256925'
+            },
+            {
+                title: 'Ricongiungimento tonneau e looping con il carrello',
+                vimeoId: '734256751'
+            },
+            {
+                title: 'Schneider a destra volo folle',
+                vimeoId: '734256721'
+            },
+            {
+                title: 'Schneider e ricongiungimento',
+                vimeoId: '734257064'
+            },
+            {
+                title: 'Schneider e ricongiungimento',
+                vimeoId: '734257147'
+            },
+            {
+                title: 'Scintilla',
+                vimeoId: '734256679'
+            },
+            {
+                title: 'Tonneau destro a cigno-schneider negativa',
+                vimeoId: '734256890'
+            },
+            {
+                title: 'Tonneau sinistra rovesciato dritto rovesciato',
+                vimeoId: '734257042'
+            },
+            {
+                title: 'Triplo tonneau e piramidone',
+                vimeoId: '734256839'
+            },
+            {
+                title: 'Ventaglio apollo 313 serie di tonneau',
+                vimeoId: '734257012'
+            },
+        ];
+
+        let currentVideoIndex = 0;
+
+        function loadVideo(index) {
+            const video = acrobaticVideos[index];
+            const videoFrame = document.getElementById('videoFrame');
+            const videoTitle = document.getElementById('videoTitle');
+            
+            videoFrame.innerHTML = `
+                <iframe 
+                    src="https://player.vimeo.com/video/${video.vimeoId}?autoplay=0&title=0&byline=0&portrait=0" 
+                    allow="autoplay; fullscreen; picture-in-picture" 
+                    allowfullscreen>
+                </iframe>
+            `;
+            
+            videoTitle.textContent = video.title;
+        }
+
+        function changeVideo(direction) {
+            currentVideoIndex += direction;
+            
+            // Loop dei video
+            if (currentVideoIndex < 0) {
+                currentVideoIndex = acrobaticVideos.length - 1;
+            } else if (currentVideoIndex >= acrobaticVideos.length) {
+                currentVideoIndex = 0;
+            }
+            
+            loadVideo(currentVideoIndex);
+        }
+
+        // Carica il primo video all'avvio
+        loadVideo(0);
+
+        // Supporto per le frecce della tastiera
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'ArrowLeft') {
+                changeVideo(-1);
+            } else if (e.key === 'ArrowRight') {
+                changeVideo(1);
+            }
+        });
+
+        // === Selettore colore fumo ===
+        let smokeColor = 'white'; // colore iniziale
+
+        const smokeSelector = document.getElementById('smokeSelector');
+        const smokeMenu = document.getElementById('smokeMenu');
+        const colorButtons = document.querySelectorAll('.smoke-option');
+
+        // Apri/chiudi il menu
+        smokeSelector.addEventListener('click', () => {
+            smokeMenu.classList.toggle('active');
+        });
+
+        // Seleziona colore
+        colorButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                smokeColor = button.getAttribute('data-color');
+                smokeMenu.classList.remove('active');
+            });
+        });
+
+        // Modifica la classe SmokeParticle per usare il colore scelto
+        SmokeParticle.prototype.draw = function(ctx) {
+            if (this.life <= 0) return;
+
+            let colorMap = {
+                white: '255,255,255',
+                green: '0,146,70',
+                red: '206,43,55'
+            };
+
+            const rgb = colorMap[smokeColor] || '255,255,255';
+            const gradient = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, this.size);
+            gradient.addColorStop(0, `rgba(${rgb},${this.alpha})`);
+            gradient.addColorStop(1, `rgba(${rgb},0)`);
+            ctx.fillStyle = gradient;
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+            ctx.fill();
+        };
+
+        // Music Player
+        const backgroundMusic = document.getElementById('backgroundMusic');
+        const musicIcon = document.getElementById('musicIcon');
+        let isPlaying = false;
+
+        function toggleMusic() {
+            if (isPlaying) {
+                backgroundMusic.pause();
+                musicIcon.className = 'fas fa-music';
+                isPlaying = false;
+            } else {
+                backgroundMusic.play().catch(err => {
+                    console.log('Riproduzione non consentita:', err);
+                });
+                musicIcon.className = 'fas fa-pause';
+                isPlaying = true;
+            }
+        }
+
+        // Imposta volume
+        backgroundMusic.volume = 0.3;
+
+        // Tenta autoplay al caricamento
+        window.addEventListener('load', () => {
+            backgroundMusic.play()
+                .then(() => {
+                    isPlaying = true;
+                    musicIcon.className = 'fas fa-pause';
+                })
+                .catch(() => {
+                    // Se l'autoplay fallisce, la musica partirà al primo click ovunque nella pagina
+                    document.body.addEventListener('click', function startMusic() {
+                        if (!isPlaying) {
+                            backgroundMusic.play()
+                                .then(() => {
+                                    isPlaying = true;
+                                    musicIcon.className = 'fas fa-pause';
+                                })
+                                .catch(err => console.log('Errore riproduzione:', err));
+                            
+                            // Rimuovi l'event listener dopo il primo click
+                            document.body.removeEventListener('click', startMusic);
+                        }
+                    }, { once: true });
+                });
+        });
+    </script>
+</body>
+</html>
